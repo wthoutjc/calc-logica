@@ -8,7 +8,7 @@ class Model():
         self.array = []
 
         #FILTERS:
-
+        data = []
         # 1. Prepositions
         for charac in string:
             self.array.append(charac)
@@ -30,8 +30,6 @@ class Model():
                 self.preposition = self.preposition + "implies "
             elif charac == "↔":
                 self.preposition = self.preposition + "= "
-            elif charac == "+":
-                self.preposition = self.preposition + "characor "
             elif charac == "(":
                 self.preposition = self.preposition + "("
             elif charac == ")":
@@ -39,17 +37,15 @@ class Model():
 
         #2. Identifiers
         
-        self.ids = filter(lambda id:
-            id == 'p' or
-            id == 'q' or
-            id == 'r'or
-            id == 's',
-            self.array)
+        self.ids = []
+        for c in string:
+            if (c in 'pqrs') and (c not in self.ids):
+                self.ids.append(c)
 
-        self.data.append(list(self.ids))
-        self.data.append(self.preposition)
+        data.append(self.ids)
+        data.append(self.preposition)
 
         self.preposition = ""
         self.ids = None
 
-        return self.data
+        return data

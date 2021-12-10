@@ -2,7 +2,8 @@
 
 from tkinter import *
 from tkinter import Canvas, messagebox
-#import ttg
+import pyparsing
+import ttg
 
 #Model
 from Model import Model
@@ -10,7 +11,7 @@ from Model import Model
 class View():
 
     def __init__(self, title):
-        self.aux = 0
+        self.text = ''
         self.model = Model()
         self.window = Tk()
 
@@ -18,9 +19,6 @@ class View():
         self.window.resizable(0,0)
 
         self.labelTitle0 = Label(self.window, text="Calculadora Lógica - UDFJC",font=("Helvetica", 10)).grid(row=0,column=0,columnspan = 4,pady=2,padx=2)
-        self.labelTitle1 = Label(self.window, text="Por: ",font=("Helvetica", 9)).grid(row=1,column=0,columnspan = 4,pady=2,padx=2)
-        self.name0 = Label(self.window, text="Juan Camilo Ramírez Rátiva - 20181020089",font=("Helvetica", 8)).grid(row=2,column=0,columnspan = 4,pady=2,padx=2)
-        self.name1 = Label(self.window, text="Johnatan Guillermo Ruiz Bautista - 20181020034",font=("Helvetica", 8)).grid(row=3,column=0,columnspan = 4,pady=2,padx=2)
 
         #Data
         self.entry = Entry(self.window, font = ("Calibri 20"))
@@ -42,7 +40,7 @@ class View():
         self.btn_o = Button(self.window, text = "v", width = 8, height = 2, command = lambda: self.escribir("v")).grid(row =7, column = 2, padx = 2, pady = 2)
         self.btn_entonces = Button(self.window, text = "→", width = 8, height = 2, command = lambda: self.escribir("→")).grid(row = 7, column = 3, padx = 2, pady = 2)
         self.btn_si = Button(self.window, text = "↔", width = 8, height = 2, command = lambda: self.escribir("↔")).grid(row = 8, column = 0, padx = 2, pady = 2)
-        self.btn_mas = Button(self.window, text = "+", width = 8, height = 2, command = lambda: self.escribir("+")).grid(row = 8, column = 1, padx = 2, pady = 2)
+        
 
         #Symbols
         self.btn_parent0 = Button(self.window, text = "(", width = 8, height = 2, command = lambda: self.escribir("(")).grid(row = 8, column = 2, padx = 2, pady = 2)
@@ -52,34 +50,33 @@ class View():
     
     def borrar(self, option):
         if option == 0:
-            if self.aux < 0:
-                self.aux = 0
-            else:
-                self.entry.delete(0, END)
-                self.aux = 0
+            self.entry.delete(0, END)
+            self.text = ''
         elif option == 1:
-            if self.aux < 0:
-                self.entry.delete(self.aux, END)
-                self.aux = 0
-            else:
-                self.entry.delete(self.aux+1, END)
-                self.aux -= 1
+            if self.text != '':
+                self.entry.delete(0, END)
+                self.text = self.text[:len(self.text)-1]
+                self.entry.insert(0, self.text)
 
     def escribir(self, x):
-        self.entry.insert(self.aux, x)
-        self.aux +=1
+        self.entry.insert(len(self.text), x)
+        self.text += x
     
     def tablas_logicas(self, array):
-        self.new_window = Tk()
-        self.new_window.title('Results')
-        self.table = Text(self.new_window, width=50,height=20)
-        print(array[0],[str(array[1])])
-        #self.table.insert(INSERT, ttg.Truths(array[0],[str(array[1])]))
-        self.table.config(state=DISABLED)
-        self.table.grid(row=0, column=0, padx=5, pady=5)
-        self.window.destroy()
-        self.btn_p = Button(self.new_window, text = "Nuevo", width = 8, height = 2, command = lambda: self.new_calc(self.new_window)).grid(row = 1, column = 0, padx = 2, pady = 2)
-        self.new_window.mainloop()
+        if array[0]:
+            try:
+                self.new_window = Tk()
+                self.new_window.title('Results')
+                self.table = Text(self.new_window, width=80,height=21)
+                print(array[0],[str(array[1])])
+                self.table.insert(INSERT, ttg.Truths(array[0],[str(array[1])]))
+                self.table.config(state=DISABLED)
+                self.table.grid(row=0, column=0, padx=5, pady=5)
+                self.window.destroy()
+                self.btn_p = Button(self.new_window, text = "Nuevo", width = 8, height = 2, command = lambda: self.new_calc(self.new_window)).grid(row = 1, column = 0, padx = 2, pady = 2)
+                self.new_window.mainloop()
+            except BaseException:
+                self.new_window.destroy()
     
     def new_calc(self, window):
         self._window = window

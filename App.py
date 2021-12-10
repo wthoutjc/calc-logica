@@ -3,7 +3,7 @@
         Autor: Bits
         
     Código Realizado por:
-        Jhonatan Ruiz
+        Johnatan Ruiz
         Juan Ramírez
 '''
 
